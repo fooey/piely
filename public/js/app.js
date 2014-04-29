@@ -7,8 +7,6 @@
 angular.module('pieApp', ['ngAnimate'])
 	.controller('AppCtrl', ['$scope', function($scope) {
 		'use strict';
-		console.log('dat app!');
-
 
 		var defaultSize = 256;
 		var defaultPadding = '5';
@@ -48,19 +46,15 @@ angular.module('pieApp', ['ngAnimate'])
 
 			// params = setSize(params);
 			params = setBg(params);
-			params = setStrokeColor(params);
 			params = setStrokeWidth(params);
+			params = setStrokeColor(params);
+			params = setFillColers(params);
 
 			if (params.length) {
 				src += '?' + params.join('&');
 			}
 
 			return src;
-		};
-
-
-		$scope.deleteSlice = function(index) {
-			$scope.pieSlices.splice(index, 1);
 		};
 
 
@@ -75,10 +69,21 @@ angular.module('pieApp', ['ngAnimate'])
 		}
 
 
+
+		function setFillColers(params) {
+			if ($scope.bgColor.length && $scope.bgColor !== defaultBg) {
+				var bgColor = $scope.bgColor.replace(/#/, '$');
+				params.push('bgColor=' + bgColor);
+			}
+
+			return params;
+		}
+
+
 		function setStrokeColor(params) {
-			if ($scope.strokeColor !== defaultStroke) {
-				var strokeColor = $scope.strokeColor.replace(/#/, '$');
-				params.push('stroke=' + strokeColor);
+			if ($scope.fillColors !== defaultFills) {
+				var fillColors = $scope.fillColors.replace(/#/g, '$');
+				params.push('fill=' + fillColors);
 			}
 			return params;
 		}
