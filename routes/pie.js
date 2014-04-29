@@ -1,7 +1,7 @@
 "use strict";
 
 const util = require('util');
-const zlib = require('zlib');
+const async = require('async');
 
 
 const defaultSize = 256;
@@ -14,10 +14,12 @@ const defaultStroke = '#fff';
 const defaultStrokeWidth = '1%';
 
 
-const cacheTime = 60 * 60 * 24 * 7; // 7 Days
-
-
 exports.draw = function(req, res) {
+
+
+	/*
+	*	Determine Chart Options
+	*/
 
 	var size = (req.query.size)
 		? parseInt(req.query.size)
@@ -59,44 +61,87 @@ exports.draw = function(req, res) {
 
 
 
+	/*
+	*
+	*	Create and Serve the SVG
+	*
+	*/
+
+	async.waterfall([
+		generateSvg,
+		optimizeSvg,
+		compressSvg,
+		serveSvg,
+	], function(err, result) {
+		process.nextTick(reportToGA);
+	});
 
 
 
-	var svgString = [
-		__getSvgStyle(size),
-		'<desc>Created at http://piely.net</desc>',
-		__getSvgRect(size, bgColor),
-		__getSvgPaths(size, angles).join(''),
-		'</svg>'
-	].join('');
 
 
 
 
-	zlib.gzip(svgString, function(err, data) {
+	/*
+	*	Private Methods
+	*/
+
+
+	function generateSvg(callback) {
+		callback(null, [
+			getSvgStyle(size),
+			'<desc>Created at http://piely.net</desc>',
+			getSvgRect(size, bgColor),
+			getSvgPaths(size, angles).join(''),
+			'</svg>'
+		].join(''));
+	}
+
+
+
+	function optimizeSvg(svg, callback) {
+		const svgo = new (require('svgo'));
+
+		svgo.optimize(svg, function(result) {
+			callback(null, result.data);
+		});
+	}
+
+
+
+	function compressSvg(svg, callback) {
+		require('zlib').gzip(svg, callback);
+	}
+
+
+
+	function serveSvg(svg, callback) {
+		const cacheTime = 60 * 60 * 24 * 7; // 7 Days
+
 		res.writeHead(200, {
 			'Content-Type': 'image/svg+xml',
 			'Content-Encoding': 'gzip',
 			'Cache-Control': 'public, max-age=' + (cacheTime),
 			'Expires': new Date(Date.now() + (cacheTime * 1000)).toUTCString(),
 		});
-		res.end(data);
-	});
+
+		res.end(svg);
+
+		callback(null);
+	}
 
 
 
-
-
-	process.nextTick(function sendToGA() {
+	function reportToGA() {
 		const referer = req.get('referer');
 		const ua = require('universal-analytics');
 		const uaUUID = (req.cookies && req.cookies.uaUUID) ? req.cookies.uaUUID : null;
 		const visitor = ua('UA-51384-41', uaUUID);
 
-		//Visitor#event(category, action, label, value)
-		console.log('Send to GA');
+		// Visitor#event(category, action, label, value)
+		console.log('reportToGA()');
 		visitor.event('piechart-hotlink', referer, values.join(','), size).send();
-	});
+	};
 
 
 
@@ -107,12 +152,12 @@ exports.draw = function(req, res) {
 
 
 
+	/*
+	*	SVG Generation Helpers
+	*/
 
 
-
-
-	function __getSvgPaths(size, angles) {
-		// console.log(angles)
+	function getSvgPaths(size, angles) {
 		var shapes = [];
 
 		var radius = size / 2;
@@ -125,15 +170,15 @@ exports.draw = function(req, res) {
 	        startAngle = endAngle;
 	        endAngle = startAngle + angles[i];
 
-	        let coords = __getCoords(startAngle, endAngle, radius, pieWidth);
+	        let coords = getCoords(startAngle, endAngle, radius, pieWidth);
 
-			let pathAttribs = __getPathAttribs(i);
+			let pathAttribs = getPathAttribs(i);
 			let path = util.format(
 				"M%d,%d L%d,%d A%d,%d 0 %d,1 %d,%d z",
 				radius, radius,
 				coords[0].x, coords[0].y,
 				pieWidth, pieWidth,
-				__isLargeAngle(startAngle, endAngle),
+				isLargeAngle(startAngle, endAngle),
 				coords[1].x, coords[1].y
 			);
 
@@ -145,51 +190,51 @@ exports.draw = function(req, res) {
 		return shapes;
 	}
 
-	function __getCoords(startAngle, endAngle, radius, pieWidth) {
+
+	function getCoords(startAngle, endAngle, radius, pieWidth) {
 		let startRadians = (Math.PI * startAngle / 180);
 		let endRadians = (Math.PI * endAngle / 180);
 
-		return [
-			{
-				x: Math.round(radius + pieWidth * Math.cos(startRadians)),
-				y: Math.round(radius + pieWidth * Math.sin(startRadians))
-			},
-			{
-				x: Math.round(radius + pieWidth * Math.cos(endRadians)),
-				y: Math.round(radius + pieWidth * Math.sin(endRadians))
-			}
-		];
+		return [{
+			x: Math.round(radius + pieWidth * Math.cos(startRadians)),
+			y: Math.round(radius + pieWidth * Math.sin(startRadians))
+		}, {
+			x: Math.round(radius + pieWidth * Math.cos(endRadians)),
+			y: Math.round(radius + pieWidth * Math.sin(endRadians))
+		}];
 	}
 
-	function __getPathAttribs(i) {
+
+	function getPathAttribs(i) {
 		var attribs = [];
 		if (strokeWidth !== '0' && strokeWidth !== '0%') {
 			attribs.push(util.format('stroke="%s"', strokeColor));
 			attribs.push(util.format('stroke-width="%s"', strokeWidth));
 		}
 
-		attribs.push(util.format('fill="%s"', __getFillColor(i)));
+		attribs.push(util.format('fill="%s"', getFillColor(i)));
 
 		return attribs.join(' ');
 	}
 
 
-	function __isLargeAngle(startAngle, endAngle) {
+	function isLargeAngle(startAngle, endAngle) {
 		return (endAngle - startAngle > 180) ? 1 : 0;
 	}
 
 
-	function __getSvgStyle(size) {
+	function getSvgStyle(size) {
 		return util.format('<svg height="%d" width="%d" version="1.1" xmlns="http://www.w3.org/2000/svg">', size, size);
 	}
 
 
-	function __getSvgRect(size, bgColor) {
+	function getSvgRect(size, bgColor) {
 		return util.format('<rect x="0" y="0" width="%d" height="%d" fill="%s" stroke="none"></rect>', size, size, bgColor);
 	}
 
 
-	function __getFillColor(i) {
+	function getFillColor(i) {
 		return fillColors[i % fillColors.length];
 	}
+
 };

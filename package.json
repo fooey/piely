@@ -17,7 +17,8 @@
     "nodetime": "^0.8.15",
     "universal-analytics": "^0.3.4",
     "uuid": "^1.4.1",
-    "cookie-parser": "^1.0.1"
+    "cookie-parser": "^1.0.1",
+    "svgo": "^0.4.4"
   },
   "devDependencies": {
     "grunt": "^0.4.4",
