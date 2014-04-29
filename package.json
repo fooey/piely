@@ -9,7 +9,11 @@
     "errorhandler": "^1.0.0",
     "static-favicon": "^1.0.2",
     "lodash": "^2.4.1",
-    "async": "^0.2.10"
+    "async": "^0.2.10",
+    "nodetime": "^0.8.15",
+    "universal-analytics": "^0.3.4",
+    "uuid": "^1.4.1",
+    "cookie-parser": "^1.0.1"
   },
   "devDependencies": {
     "grunt": "^0.4.4",

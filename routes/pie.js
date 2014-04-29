@@ -64,11 +64,12 @@ exports.draw = function(req, res) {
 
 	var svgString = [
 		__getSvgStyle(size),
-		// '<desc>Created by pies</desc>',
+		'<desc>Created at http://piely.net</desc>',
 		__getSvgRect(size, bgColor),
 		__getSvgPaths(size, angles).join(''),
 		'</svg>'
 	].join('');
+
 
 
 
@@ -86,6 +87,16 @@ exports.draw = function(req, res) {
 
 
 
+	process.nextTick(function sendToGA() {
+		const referer = req.get('referer');
+		const ua = require('universal-analytics');
+		const uaUUID = (req.cookies && req.cookies.uaUUID) ? req.cookies.uaUUID : null;
+		const visitor = ua('UA-51384-41', uaUUID);
+
+		//Visitor#event(category, action, label, value)
+		console.log('Send to GA');
+		visitor.event('piechart-hotlink', referer, values.join(','), size).send();
+	});
 
 
 
@@ -110,7 +121,7 @@ exports.draw = function(req, res) {
 		var startAngle;
 		var endAngle = 0;
 
-		for(let i = 0; i < angles.length; i++) {
+		for (let i = 0; i < angles.length; i++) {
 	        startAngle = endAngle;
 	        endAngle = startAngle + angles[i];
 

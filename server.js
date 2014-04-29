@@ -1,3 +1,13 @@
+"use strict";
+
+if(process.env.NODETIME_ACCOUNT_KEY) {
+	require('nodetime').profile({
+		accountKey: process.env.NODETIME_ACCOUNT_KEY,
+		appName: 'Piely.net' // optional
+	});
+}
+
+
 
 /**
  * Module dependencies
@@ -6,6 +16,7 @@
 const express = require('express');
 const http = require('http');
 const path = require('path');
+const cookieParser = require('cookie-parser');
 
 const app = module.exports = express();
 
@@ -32,6 +43,20 @@ else {
 	app.use(errorHandler());
 	app.use(morgan());
 }
+
+app.use(cookieParser())
+.use(function(req, res, next) {
+	let uaUUID = req.cookies.uaUUID;
+
+	if (!uaUUID) {
+    	uaUUID = require('uuid').v4();
+
+		const cookieMaxAge = 1000 * 60 * 60 * 24 * 356 * 2; // 2 years
+		res.cookie('uaUUID', uaUUID, { maxAge: cookieMaxAge, httpOnly: true});
+	}
+
+	next();
+});
 
 // all environments
 app.set('port', process.env.PORT || 31415);

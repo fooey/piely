@@ -56,11 +56,13 @@ html(lang='en', ng-app='pieApp')
 
 								.form-group
 									.col-md-4
-									.col-md-8
-										button.btn.btn-success(ng-click="pieSlices.push(1)")
-											i.fa.fa-plus &nbsp; Add Slice to Pie
-										button.btn.btn-danger(ng-click="pieSlices.pop()", ng-show="pieSlices.length > 2")
-											i.fa.fa-minus &nbsp; Remove Slice
+									.col-md-8: .row
+										.col-md-6.text-center
+											button.btn.btn-success(ng-click="pieSlices.push(1)")
+												i.fa.fa-plus &nbsp; Create Slice
+										.col-md-6.text-center
+											button.btn.btn-danger(ng-click="pieSlices.pop()", ng-show="pieSlices.length > 2")
+												i.fa.fa-minus &nbsp; Remove Slice
 
 
 
@@ -187,4 +189,12 @@ html(lang='en', ng-app='pieApp')
 
 
 		script(src='/js/dist/app.min.js')
+
+		script.
+			(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+			(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+			m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+			})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+			ga('create', 'UA-51384-41', 'piely.net');
+			ga('send', 'pageview');
 
