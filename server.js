@@ -31,13 +31,13 @@ if (app.get('env') === 'development') {
 else {
 	app.use(errorHandler());
 	app.use(morgan());
-}; 
+}
 
 // all environments
 app.set('port', process.env.PORT || 31415);
 app.set('views', __dirname + '/views');
 app.set('view engine', 'jade');
-app.use(express.static(path.join(__dirname, 'public')))
+app.use(express.static(path.join(__dirname, 'public')));
 
 
 
@@ -48,7 +48,8 @@ const routes = require('./routes');
 const pie = require('./routes/pie');
 
 app.get('/', routes.index);
-app.get('/favicon.ico', function (req, res) {res.status(404).send('Not found');});
+app.get('/favicon.ico', function(req, res) {res.status(404).send('Not found');});
+app.get('/:size/:values', pie.draw);
 app.get('/:values', pie.draw);
 
 
@@ -58,6 +59,6 @@ app.get('/:values', pie.draw);
 */
 
 console.log(Date.now(), 'Running Node.js ' + process.version + ' with flags "' + process.execArgv.join(' ') + '"');
-http.createServer(app).listen(app.get('port'), function () {
+http.createServer(app).listen(app.get('port'), function() {
   console.log(Date.now(), 'Express server listening on port ' + app.get('port'));
 });
