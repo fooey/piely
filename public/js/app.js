@@ -61,7 +61,7 @@ angular.module('pieApp', ['ngAnimate'])
 
 		function setBg(params) {
 			if ($scope.bgColor.length && $scope.bgColor !== defaultBg) {
-				var bgColor = $scope.bgColor.replace(/#/, '$');
+				var bgColor = $scope.bgColor.replace(/#/g, '$');
 				params.push('bgColor=' + bgColor);
 			}
 
@@ -71,9 +71,9 @@ angular.module('pieApp', ['ngAnimate'])
 
 
 		function setFillColers(params) {
-			if ($scope.bgColor.length && $scope.bgColor !== defaultBg) {
-				var bgColor = $scope.bgColor.replace(/#/, '$');
-				params.push('bgColor=' + bgColor);
+			if ($scope.fillColors !== defaultFills) {
+				var fillColors = $scope.fillColors.replace(/#/g, '$');
+				params.push('fill=' + fillColors);
 			}
 
 			return params;
@@ -81,9 +81,9 @@ angular.module('pieApp', ['ngAnimate'])
 
 
 		function setStrokeColor(params) {
-			if ($scope.fillColors !== defaultFills) {
-				var fillColors = $scope.fillColors.replace(/#/g, '$');
-				params.push('fill=' + fillColors);
+			if ($scope.strokeColor !== defaultStroke) {
+				var strokeColor = $scope.strokeColor.replace(/#/g, '$');
+				params.push('stroke=' + strokeColor);
 			}
 			return params;
 		}
