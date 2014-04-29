@@ -1,4 +1,4 @@
-node-pies
+http://piely.net
 =========
 
-Simple SVG Pie Chart Service
+Pie Chart Generation Made Simple
