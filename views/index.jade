@@ -1,32 +1,190 @@
 !!! 5
-html(lang='en')
+html(lang='en', ng-app='pieApp')
 	head
 		meta(charset='utf-8')
-		title Node Pies
+		title Piely.net &ndash; Pie Chart Generation Made Simple
 		link(rel='stylesheet', href='//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css')
 		link(rel='stylesheet', href='//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css')
+		link(rel='stylesheet', href='/css/dist/app.min.css')
+
+
+	body
+
+		.container(ng-controller="AppCtrl")
+
+			.row: .col-lg-12
+
+				h1.page-header Piely.net 
+					small
+						span.hidden-xs &ndash;
+						| Pie Chart Generation Made Simple
+
+
+				.panel.panel-success
+					.panel-heading How to use this site...
+					.panel-body
+						ol
+							li Play with the chart builder below to see how the URL's are generated
+							li Hot link the pie charts from your own site using standard &lt;img&gt; tags
+							li Take the rest of the day off, making pie charts is hard work!
+
+
+			form.form-horizontal(name="builder")
+				.row
+					.col-sm-6
+						.panel.panel-info
+							.panel-heading Pie Slices
+							.panel-body
+								.form-group
+									label.col-md-4.control-label() Pie Chart URL
+									.col-md-8
+										input.form-control(type="text", value="http://piely.net{{pieSrc()}}")
+
+								.form-group.slide-down(ng-repeat="sliceVal in pieSlices track by $index")
+									label.col-md-4.control-label(for="pieSlice{{$index}}")
+										| Slice {{$index + 1}}
+									.col-md-8
+										.input-group
+											input.form-control(
+												type="number",
+												ng-model="pieSlices[$index]",
+												min=0,
+												required,
+											)
+											span.input-group-addon(ng-show="pieSlices.length > 2")
+												i.sliceDeleter.fa.fa-times(ng-click="pieSlices.splice($index, 1)", title="Remove Slice")
+
+								.form-group
+									.col-md-4
+									.col-md-8
+										button.btn.btn-success(ng-click="pieSlices.push(1)")
+											i.fa.fa-plus &nbsp; Add Slice to Pie
+										button.btn.btn-danger(ng-click="pieSlices.pop()", ng-show="pieSlices.length > 2")
+											i.fa.fa-minus &nbsp; Remove Slice
+
+
+
+
+					.col-sm-6
+						.panel.panel-info
+							.panel-heading Chart Options
+							.panel-body
+
+								.form-group(ng-class="{'has-error': !builder.size.$valid}")
+									label.col-md-4.control-label(for="size") Size
+									.col-md-4
+										input.form-control(
+											type="number",
+											id="size",
+											name="size",
+											ng-model="size",
+											min=0,
+											required,
+										)
+									p.help-block.error(ng-show="builder.size.$error.required") This field is required and must be a number!
+									p.help-block.error(ng-show="builder.size.$error.min") Must have be at least 0!
+
+								.form-group
+									label.col-md-4.control-label(for="bgColor") BG Color
+									.col-md-4
+										input.form-control(
+											type="text",
+											id="bgColor",
+											ng-model="bgColor",
+										)
+
+
+								.form-group
+									label.col-md-4.control-label(for="strokeColor") StrokeColor
+									.col-md-4
+										input.form-control(
+											type="text",
+											id="strokeColor",
+											ng-model="strokeColor",
+										)
+
+								.form-group
+									label.col-md-4.control-label(for="strokeWidth") Stroke Width
+									.col-md-4
+										input.form-control(
+											type="number",
+											min=0,
+											ng-model="strokeWidth",
+										)
+									.col-md-4
+										label.radio-inline
+											input(
+												type="radio",
+												value="%",
+												ng-model="strokeMode",
+											)
+											| %
+										label.radio-inline
+											input(
+												type="radio",
+												value="px",
+												ng-model="strokeMode",
+											)
+											| px
+
+
+								.form-group
+									label.col-md-4.control-label(for="fillColors") Fill Colors
+									.col-md-8
+										input.form-control(
+											type="text",
+											id="fillColors",
+											ng-model="fillColors",
+										)
+
+
+			.row: .col-xs-12
+				.panel.panel-primary
+					.panel-heading#exampleUrl
+						a(ng-href="{{ + pieSrc() + '.svg'}}") http://piely.net{{pieSrc()}}
+					.panel-body#examplePie
+						img(ng-src="{{pieSrc()}}", width="{{size}}", height="{{size}}")
+
+
+
+
+			footer.well: .row: .col-xs-12.text-center
+
+				div.credits
+					div Site design and programming by 
+						a(href="http://jasonrushton.com") http://JasonRushton.com
+
+					div Source available at 
+						a(href="https://github.com/fooey/piely") https://github.com/fooey/piely
+
+				div.powers
+					img.node(src="/img/nodejs-light.png")
+					img.angular(src="/img/AngularJS-large.png")
+
+
+
+
+
 
 		if process.env.NODE_ENV === 'development'
 			script(src='//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.js')
 			script(src='//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.js')
+			//- script(src='//cdnjs.cloudflare.com/ajax/libs/lodash.js/2.4.1/lodash.js')
+			//- script(src='//cdnjs.cloudflare.com/ajax/libs/async/0.4.0/async.js')
+
+			script(src='//ajax.googleapis.com/ajax/libs/angularjs/1.2.15/angular.js')
+			script(src='//ajax.googleapis.com/ajax/libs/angularjs/1.2.15/angular-route.js')
+			script(src='//ajax.googleapis.com/ajax/libs/angularjs/1.2.15/angular-animate.js')
 		else
 			script(src='//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js')
 			script(src='//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js')
+			//- script(src='//cdnjs.cloudflare.com/ajax/libs/lodash.js/2.4.1/lodash.min.js')
+			//- script(src='//cdnjs.cloudflare.com/ajax/libs/async/0.4.0/async.min.js')
 
-	body
+			script(src='//ajax.googleapis.com/ajax/libs/angularjs/1.2.15/angular.min.js')
+			script(src='//ajax.googleapis.com/ajax/libs/angularjs/1.2.15/angular-route.min.js')
+			script(src='//ajax.googleapis.com/ajax/libs/angularjs/1.2.15/angular-animate.min.js')
 
-		#navbar.navbar.navbar-default(role="navigation")
-			.navbar-header
-				button.navbar-toggle(type="button", data-toggle="collapse", data-target=".navbar-ex1-collapse")
-					span.sr-only Toggle navigation
-					span.icon-bar
-					span.icon-bar
-					span.icon-bar
 
-				a.navbar-brand(href="/") Node Pies
-
-		.container
-			.row
-				.col-md-12
-					h1 I like pie
+		script(src='/js/dist/app.min.js')
 
