@@ -17,7 +17,7 @@ const defaultStrokeWidth = '1%';
 const cacheTime = 60 * 60 * 24 * 7; // 7 Days
 
 
-exports.draw = function (req, res) {
+exports.draw = function(req, res) {
 
 	var size = (req.query.size)
 		? parseInt(req.query.size)
@@ -27,8 +27,8 @@ exports.draw = function (req, res) {
 		? parseInt(req.query.padding)
 		: defaultPadding;
 
-	var bgColor = (req.query.bg)
-		? req.query.bg.replace('$', '#')
+	var bgColor = (req.query.bgColor)
+		? req.query.bgColor.replace('$', '#')
 		: defaultBg;
 
 	var fillColors = (req.query.fill)
@@ -47,14 +47,14 @@ exports.draw = function (req, res) {
 	var urlValues = req.params.values.split(',');
 	var values = [];
 
-	urlValues.forEach(function(val){
-		var n = parseInt(val);
-		if(!isNaN(n)) values.push(n);
+	urlValues.forEach(function(val) {
+		var n = parseFloat(val);
+		if (!isNaN(n)) values.push(n);
 	});
 
 
-	var sum = values.reduce(function(prev, cur){return prev + cur;});
-	var angles = values.map(function(val){return 360 * val / sum;});
+	var sum = values.reduce(function(prev, cur) {return prev + cur;});
+	var angles = values.map(function(val) {return 360 * val / sum;});
 
 
 
@@ -68,11 +68,11 @@ exports.draw = function (req, res) {
 		__getSvgRect(size, bgColor),
 		__getSvgPaths(size, angles).join(''),
 		'</svg>'
-	].join('')
+	].join('');
 
 
 
-	zlib.gzip(svgString, function (err, data) {
+	zlib.gzip(svgString, function(err, data) {
 		res.writeHead(200, {
 			'Content-Type': 'image/svg+xml',
 			'Content-Encoding': 'gzip',
@@ -100,29 +100,29 @@ exports.draw = function (req, res) {
 
 
 
-	function __getSvgPaths(size, angles){
+	function __getSvgPaths(size, angles) {
 		// console.log(angles)
 		var shapes = [];
 
-		var radius = size/2;
-		var pieWidth = Math.round(radius - (padding/2));
+		var radius = size / 2;
+		var pieWidth = Math.round(radius - (padding / 2));
 
 		var startAngle;
 		var endAngle = 0;
 
-		for(let i = 0; i < angles.length; i++){
-	        startAngle = endAngle; 
+		for(let i = 0; i < angles.length; i++) {
+	        startAngle = endAngle;
 	        endAngle = startAngle + angles[i];
 
 	        let coords = __getCoords(startAngle, endAngle, radius, pieWidth);
 
 			let pathAttribs = __getPathAttribs(i);
 			let path = util.format(
-				"M%d,%d L%d,%d A%d,%d 0 %d,1 %d,%d z", 
-				radius, radius, 
-				coords[0].x, coords[0].y, 
-				pieWidth, pieWidth, 
-				__isLargeAngle(startAngle, endAngle), 
+				"M%d,%d L%d,%d A%d,%d 0 %d,1 %d,%d z",
+				radius, radius,
+				coords[0].x, coords[0].y,
+				pieWidth, pieWidth,
+				__isLargeAngle(startAngle, endAngle),
 				coords[1].x, coords[1].y
 			);
 
@@ -134,9 +134,9 @@ exports.draw = function (req, res) {
 		return shapes;
 	}
 
-	function __getCoords(startAngle, endAngle, radius, pieWidth){
-		let startRadians = ( Math.PI * startAngle / 180 );
-		let endRadians = ( Math.PI * endAngle / 180 );
+	function __getCoords(startAngle, endAngle, radius, pieWidth) {
+		let startRadians = (Math.PI * startAngle / 180);
+		let endRadians = (Math.PI * endAngle / 180);
 
 		return [
 			{
@@ -150,31 +150,35 @@ exports.draw = function (req, res) {
 		];
 	}
 
-	function __getPathAttribs(i){
-		return [
-			util.format('stroke="%s"', strokeColor),
-			util.format('stroke-width="%s"', strokeWidth),
-			util.format('fill="%s"', __getFillColor(i)),
-		].join(' ');
+	function __getPathAttribs(i) {
+		var attribs = [];
+		if (strokeWidth !== '0' && strokeWidth !== '0%') {
+			attribs.push(util.format('stroke="%s"', strokeColor));
+			attribs.push(util.format('stroke-width="%s"', strokeWidth));
+		}
+
+		attribs.push(util.format('fill="%s"', __getFillColor(i)));
+
+		return attribs.join(' ');
 	}
 
 
-	function __isLargeAngle(startAngle, endAngle){
+	function __isLargeAngle(startAngle, endAngle) {
 		return (endAngle - startAngle > 180) ? 1 : 0;
 	}
 
 
-	function __getSvgStyle(size){
-		return util.format('<svg height="%d" width="%d" version="1.1" xmlns="http://www.w3.org/2000/svg">', size, size );
+	function __getSvgStyle(size) {
+		return util.format('<svg height="%d" width="%d" version="1.1" xmlns="http://www.w3.org/2000/svg">', size, size);
 	}
 
 
-	function __getSvgRect(size, bgColor){
+	function __getSvgRect(size, bgColor) {
 		return util.format('<rect x="0" y="0" width="%d" height="%d" fill="%s" stroke="none"></rect>', size, size, bgColor);
 	}
 
 
-	function __getFillColor(i){
+	function __getFillColor(i) {
 		return fillColors[i % fillColors.length];
 	}
 };
