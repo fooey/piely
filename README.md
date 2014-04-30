@@ -1,7 +1,7 @@
-http://piely.net
+[Piely](http://piely.net)
 =========
 
 Pie Chart Generation Made Simple
 
 
-Powered by Node.js and Angular.js
+Powered by [Node.js](http://nodejs.org/) and (https://angularjs.org/)
