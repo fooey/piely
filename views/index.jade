@@ -143,7 +143,7 @@ html(lang='en', ng-app='pieApp')
 			.row: .col-xs-12
 				.panel.panel-primary
 					.panel-heading#exampleUrl
-						a(ng-href="{{ + pieSrc() + '.svg'}}") http://piely.net{{pieSrc()}}
+						a(ng-href="{{pieSrc()}}") http://piely.net{{pieSrc()}}
 					.panel-body#examplePie
 						img(ng-src="{{pieSrc()}}", width="{{size}}", height="{{size}}")
 
