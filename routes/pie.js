@@ -20,7 +20,7 @@ const defaultOptions = {
 exports.draw = function(req, res) {
 
 	var urlOptions = {
-		size: (req.query.size) ? parseInt(req.query.size) : undefined,
+		size: (req.params.size) ? parseInt(req.params.size) : undefined,
 		padding: (req.query.padding) ? parseInt(req.query.padding) : undefined,
 
 		bgColor: (req.query.bgColor) ? req.query.bgColor.replace('$', '#') : undefined,
