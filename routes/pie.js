@@ -71,10 +71,14 @@ exports.draw = function(req, res) {
 
 		dirty.forEach(function(val) {
 			var n = parseFloat(val);
-			if (!isNaN(n)) {
+			if (!isNaN(n) && n) {
 				clean.push(n)
 			};
 		});
+
+		if (!clean.length) {
+			clean.push(0);
+		}
 
 		return clean;
 	}
