@@ -1,10 +1,14 @@
 "use strict";
+if (process.env.NODE_ENV !== 'development') {
+	require('newrelic');
 
-if(process.env.NODETIME_ACCOUNT_KEY) {
-	require('nodetime').profile({
-		accountKey: process.env.NODETIME_ACCOUNT_KEY,
-		appName: 'Piely.net' // optional
-	});
+
+	if (process.env.NODETIME_ACCOUNT_KEY) {
+		require('nodetime').profile({
+			accountKey: process.env.NODETIME_ACCOUNT_KEY,
+			appName: 'Piely.net' // optional
+		});
+	}
 }
 
 
