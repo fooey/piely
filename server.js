@@ -45,7 +45,7 @@ if (app.get('env') === 'development') {
 }
 else {
 	app.use(errorHandler());
-	app.use(morgan());
+	app.use(morgan('common'));
 }
 
 app.use(cookieParser())

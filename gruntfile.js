@@ -7,6 +7,7 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-contrib-less');
 	grunt.loadNpmTasks('grunt-contrib-cssmin');
 
+	grunt.loadNpmTasks('grunt-browserify');
 	grunt.loadNpmTasks('grunt-contrib-uglify');
 
 
@@ -30,7 +31,7 @@ module.exports = function(grunt) {
 				options: {
 					nodeArgs: ['--harmony'],
 					ext: 'js,jade,json',
-					ignore: ['node_modules/**', 'public/**', 'views/partials/**', 'gruntfile.js'],
+					ignore: ['node_modules/**', 'gruntfile.js'],
 
 					// delay: 1,
 					env: {
@@ -45,7 +46,7 @@ module.exports = function(grunt) {
 				options: {
 					nodeArgs: ['--harmony'],
 					ext: 'js,jade,json',
-					ignore: ['node_modules/**', 'public/**', 'views/partials/**', 'gruntfile.js'],
+					ignore: ['node_modules/**', 'gruntfile.js'],
 
 					// delay: 1,
 					env: {
@@ -103,11 +104,12 @@ module.exports = function(grunt) {
 			jsDev: {
 				files: [
 					'./public/js/*.js',
+					'./public/js/jsx/**/*.*',
 				],
 				// tasks: ['uglify:appJs'],
-				tasks: ['uglify'],
+				tasks: ['compile-js'],
 				options: {
-					livereload: true,
+					livereload: false,
 				},
 			},
 
@@ -148,6 +150,21 @@ module.exports = function(grunt) {
 			}
 		},
 
+
+
+		browserify: {
+			options: {
+				transform: [require('grunt-react').browserify],
+				ext: '.jsx',
+			},
+			app: {
+				src: 'public/js/app.js',
+				dest: 'public/js/dist/app.js',
+			}
+		},
+
+
+
 		uglify: {
 			options: {
 				report: 'min',
@@ -161,7 +178,7 @@ module.exports = function(grunt) {
 				},
 				files: {
 					'public/js/dist/app.min.js': [
-						'public/js/app.js',
+						'public/js/dist/app.js',
 					]
 				}
 			},
@@ -171,6 +188,12 @@ module.exports = function(grunt) {
 
 
 
-	grunt.registerTask('dev', ['less:app', 'cssmin:app', 'uglify:app', 'concurrent:dev']);
-	grunt.registerTask('default', ['less:app', 'cssmin:app', 'uglify:app', 'nodemon:prod']);
+	grunt.registerTask('compile-css', ['less', 'cssmin']);
+	grunt.registerTask('compile-js', ['browserify', 'uglify']);
+	grunt.registerTask('compile', ['compile-css', 'compile-js']);
+
+	grunt.registerTask('dev', ['compile', 'concurrent:dev']);
+	grunt.registerTask('prod', ['compile', 'nodemon:prod']);
+
+	grunt.registerTask('default', ['dev']);
 };

@@ -1,24 +1,21 @@
-!!! 5
+doctype html
 html(lang='en', ng-app='pieApp')
 	head
 		meta(charset='utf-8')
 		title Piely.net &ndash; Pie Chart Generation Made Simple
-		link(rel='stylesheet', href='//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css')
-		link(rel='stylesheet', href='//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css')
+		link(rel='stylesheet', href='//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.1/css/bootstrap.min.css')
+		link(rel='stylesheet', href='//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.2.0/css/font-awesome.min.css')
 		link(rel='stylesheet', href='/css/dist/app.min.css')
 
 
 	body
 
 		.container(ng-controller="AppCtrl")
-
 			.row: .col-lg-12
-
-				h1.page-header Piely.net 
+				h1.page-header Piely.net
 					small
-						span.hidden-xs &ndash;
-						| Pie Chart Generation Made Simple
-
+						span.hidden-xs
+							| &nbsp;&ndash;Pie Chart Generation Made Simple
 
 				.panel.panel-success
 					.panel-heading How to use this site...
@@ -29,166 +26,31 @@ html(lang='en', ng-app='pieApp')
 							li Take the rest of the day off, making pie charts is hard work!
 
 
-			form.form-horizontal(name="builder")
-				.row
-					.col-sm-6
-						.panel.panel-info
-							.panel-heading Pie Slices
-							.panel-body
-								.form-group
-									label.col-md-4.control-label() Pie Chart URL
-									.col-md-8
-										input.form-control(type="text", value="http://piely.net{{pieSrc()}}")
-
-								.form-group.slide-down(ng-repeat="sliceVal in pieSlices track by $index")
-									label.col-md-4.control-label(for="pieSlice{{$index}}")
-										| Slice {{$index + 1}}
-									.col-md-8
-										.input-group
-											input.form-control(
-												type="number",
-												ng-model="pieSlices[$index]",
-												min=0,
-												required,
-											)
-											span.input-group-addon(ng-show="pieSlices.length > 2")
-												i.sliceDeleter.fa.fa-times(ng-click="pieSlices.splice($index, 1)", title="Remove Slice")
-
-								.form-group
-									.col-md-4
-									.col-md-8: .row
-										.col-md-6.text-center
-											button.btn.btn-success(ng-click="pieSlices.push(1)")
-												i.fa.fa-plus &nbsp; Create Slice
-										.col-md-6.text-center
-											button.btn.btn-danger(ng-click="pieSlices.pop()", ng-show="pieSlices.length > 2")
-												i.fa.fa-minus &nbsp; Remove Slice
-
-
-
-
-					.col-sm-6
-						.panel.panel-info
-							.panel-heading Chart Options
-							.panel-body
-
-								.form-group(ng-class="{'has-error': !builder.size.$valid}")
-									label.col-md-4.control-label(for="size") Size
-									.col-md-4
-										input.form-control(
-											type="number",
-											id="size",
-											name="size",
-											ng-model="size",
-											min=0,
-											required,
-										)
-									p.help-block.error(ng-show="builder.size.$error.required") This field is required and must be a number!
-									p.help-block.error(ng-show="builder.size.$error.min") Must have be at least 0!
-
-								.form-group
-									label.col-md-4.control-label(for="bgColor") BG Color
-									.col-md-4
-										input.form-control(
-											type="text",
-											id="bgColor",
-											ng-model="bgColor",
-										)
-
-
-								.form-group
-									label.col-md-4.control-label(for="strokeColor") StrokeColor
-									.col-md-4
-										input.form-control(
-											type="text",
-											id="strokeColor",
-											ng-model="strokeColor",
-										)
-
-								.form-group
-									label.col-md-4.control-label(for="strokeWidth") Stroke Width
-									.col-md-4
-										input.form-control(
-											type="number",
-											min=0,
-											ng-model="strokeWidth",
-										)
-									.col-md-4
-										label.radio-inline
-											input(
-												type="radio",
-												value="%",
-												ng-model="strokeMode",
-											)
-											| %
-										label.radio-inline
-											input(
-												type="radio",
-												value="px",
-												ng-model="strokeMode",
-											)
-											| px
-
-
-								.form-group
-									label.col-md-4.control-label(for="fillColors") Fill Colors
-									.col-md-8
-										input.form-control(
-											type="text",
-											id="fillColors",
-											ng-model="fillColors",
-										)
-
-
-			.row: .col-xs-12
-				.panel.panel-primary
-					.panel-heading#exampleUrl
-						a(ng-href="{{pieSrc()}}") http://piely.net{{pieSrc()}}
-					.panel-body#examplePie
-						img(ng-src="{{pieSrc()}}", width="{{size}}", height="{{size}}")
-
-
+			#builder
 
 
 			footer.well: .row: .col-xs-12.text-center
-
 				div.credits
-					div Site design and programming by 
+					div Site design and programming by
 						a(href="http://jasonrushton.com") http://JasonRushton.com
 
-					div Source available at 
+					div Source available at
 						a(href="https://github.com/fooey/piely") https://github.com/fooey/piely
 
-				div.powers
-					img.node(src="/img/nodejs-light.png")
-					img.angular(src="/img/AngularJS-large.png")
 
 
-
-
-
+		script(src='//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js')
+		script(src='//cdnjs.cloudflare.com/ajax/libs/lodash.js/2.4.1/lodash.min.js')
+		//- script(src='https://cdn.rawgit.com/YuzuJS/setImmediate/master/setImmediate.js')
 
 		if process.env.NODE_ENV === 'development'
-			script(src='//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.js')
-			script(src='//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.js')
-			//- script(src='//cdnjs.cloudflare.com/ajax/libs/lodash.js/2.4.1/lodash.js')
-			//- script(src='//cdnjs.cloudflare.com/ajax/libs/async/0.4.0/async.js')
-
-			script(src='//ajax.googleapis.com/ajax/libs/angularjs/1.2.15/angular.js')
-			script(src='//ajax.googleapis.com/ajax/libs/angularjs/1.2.15/angular-route.js')
-			script(src='//ajax.googleapis.com/ajax/libs/angularjs/1.2.15/angular-animate.js')
+			script(src='//cdnjs.cloudflare.com/ajax/libs/react/0.12.1/react-with-addons.js')
+			script(src='/js/dist/app.js')
 		else
-			script(src='//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js')
-			script(src='//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js')
-			//- script(src='//cdnjs.cloudflare.com/ajax/libs/lodash.js/2.4.1/lodash.min.js')
-			//- script(src='//cdnjs.cloudflare.com/ajax/libs/async/0.4.0/async.min.js')
-
-			script(src='//ajax.googleapis.com/ajax/libs/angularjs/1.2.15/angular.min.js')
-			script(src='//ajax.googleapis.com/ajax/libs/angularjs/1.2.15/angular-route.min.js')
-			script(src='//ajax.googleapis.com/ajax/libs/angularjs/1.2.15/angular-animate.min.js')
+			script(src='//cdnjs.cloudflare.com/ajax/libs/react/0.12.1/react-with-addons.min.js')
+			script(src='/js/dist/app.min.js')
 
 
-		script(src='/js/dist/app.min.js')
 
 		script.
 			(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
@@ -198,3 +60,126 @@ html(lang='en', ng-app='pieApp')
 			ga('create', 'UA-51384-41', 'piely.net');
 			ga('send', 'pageview');
 
+
+
+
+
+
+
+			//- form.form-horizontal(name="builder")
+			//- 	.row
+			//- 		.col-sm-6
+			//- 			.panel.panel-info
+			//- 				.panel-heading Pie Slices
+			//- 				.panel-body
+			//- 					.form-group
+			//- 						label.col-md-4.control-label() Pie Chart URL
+			//- 						.col-md-8
+			//- 							input.form-control(type="text", value="http://piely.net{{pieSrc()}}")
+
+			//- 					.form-group.slide-down(ng-repeat="sliceVal in pieSlices track by $index")
+			//- 						label.col-md-4.control-label(for="pieSlice{{$index}}")
+			//- 							| Slice {{$index + 1}}
+			//- 						.col-md-8
+			//- 							.input-group
+			//- 								input.form-control(
+			//- 									type="number",
+			//- 									ng-model="pieSlices[$index]",
+			//- 									min=0,
+			//- 									required,
+			//- 								)
+			//- 								span.input-group-addon(ng-show="pieSlices.length > 2")
+			//- 									i.sliceDeleter.fa.fa-times(ng-click="pieSlices.splice($index, 1)", title="Remove Slice")
+
+			//- 					.form-group
+			//- 						.col-md-4
+			//- 						.col-md-8: .row
+			//- 							.col-md-6.text-center
+			//- 								button.btn.btn-success(ng-click="pieSlices.push(1)")
+			//- 									i.fa.fa-plus &nbsp; Create Slice
+			//- 							.col-md-6.text-center
+			//- 								button.btn.btn-danger(ng-click="pieSlices.pop()", ng-show="pieSlices.length > 2")
+			//- 									i.fa.fa-minus &nbsp; Remove Slice
+
+
+
+
+			//- 		.col-sm-6
+			//- 			.panel.panel-info
+			//- 				.panel-heading Chart Options
+			//- 				.panel-body
+
+			//- 					.form-group(ng-class="{'has-error': !builder.size.$valid}")
+			//- 						label.col-md-4.control-label(for="size") Size
+			//- 						.col-md-4
+			//- 							input.form-control(
+			//- 								type="number",
+			//- 								id="size",
+			//- 								name="size",
+			//- 								ng-model="size",
+			//- 								min=0,
+			//- 								required,
+			//- 							)
+			//- 						p.help-block.error(ng-show="builder.size.$error.required") This field is required and must be a number!
+			//- 						p.help-block.error(ng-show="builder.size.$error.min") Must have be at least 0!
+
+			//- 					.form-group
+			//- 						label.col-md-4.control-label(for="bgColor") BG Color
+			//- 						.col-md-4
+			//- 							input.form-control(
+			//- 								type="text",
+			//- 								id="bgColor",
+			//- 								ng-model="bgColor",
+			//- 							)
+
+
+			//- 					.form-group
+			//- 						label.col-md-4.control-label(for="strokeColor") StrokeColor
+			//- 						.col-md-4
+			//- 							input.form-control(
+			//- 								type="text",
+			//- 								id="strokeColor",
+			//- 								ng-model="strokeColor",
+			//- 							)
+
+			//- 					.form-group
+			//- 						label.col-md-4.control-label(for="strokeWidth") Stroke Width
+			//- 						.col-md-4
+			//- 							input.form-control(
+			//- 								type="number",
+			//- 								min=0,
+			//- 								ng-model="strokeWidth",
+			//- 							)
+			//- 						.col-md-4
+			//- 							label.radio-inline
+			//- 								input(
+			//- 									type="radio",
+			//- 									value="%",
+			//- 									ng-model="strokeMode",
+			//- 								)
+			//- 								| %
+			//- 							label.radio-inline
+			//- 								input(
+			//- 									type="radio",
+			//- 									value="px",
+			//- 									ng-model="strokeMode",
+			//- 								)
+			//- 								| px
+
+
+			//- 					.form-group
+			//- 						label.col-md-4.control-label(for="fillColors") Fill Colors
+			//- 						.col-md-8
+			//- 							input.form-control(
+			//- 								type="text",
+			//- 								id="fillColors",
+			//- 								ng-model="fillColors",
+			//- 							)
+
+
+			//- .row: .col-xs-12
+			//- 	.panel.panel-primary
+			//- 		.panel-heading#exampleUrl
+			//- 			a(ng-href="{{pieSrc()}}") http://piely.net{{pieSrc()}}
+			//- 		.panel-body#examplePie
+			//- 			img(ng-src="{{pieSrc()}}", width="{{size}}", height="{{size}}")
