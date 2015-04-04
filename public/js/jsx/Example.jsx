@@ -5,7 +5,7 @@
 *	Module Globals
 */
 
-var PureRenderMixin = React.addons.PureRenderMixin;
+const PureRenderMixin = React.addons.PureRenderMixin;
 
 
 
@@ -30,15 +30,15 @@ module.exports = React.createClass({
 */
 
 function render() {
-	var component = this;
-	var props = component.props;
+	let component = this;
+	let props = component.props;
 
-	var src = props.src;
-	var size = props.size;
+	const src = props.src;
+	const size = props.size;
 
 	return <div className="panel panel-primary">
 		<div id="exampleUrl" className="panel-heading">
-			<a href={src}>{src}</a>
+			<a href={src}>http://piely.net{src}</a>
 		</div>
 		<div id="examplePie" className="panel-body">
 			<img src={src} width={size} height={size} />

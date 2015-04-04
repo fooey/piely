@@ -29,7 +29,10 @@ module.exports = function(grunt) {
 			dev: {
 				script: './server.js',
 				options: {
-					nodeArgs: ['--harmony'],
+					"execMap": {
+						"js": "iojs --harmony",
+						// "js": "node --harmony",
+					},
 					ext: 'js,jade,json',
 					ignore: ['node_modules/**', 'gruntfile.js'],
 
@@ -154,8 +157,7 @@ module.exports = function(grunt) {
 
 		browserify: {
 			options: {
-				transform: [require('grunt-react').browserify],
-				ext: '.jsx',
+				transform: [require('babelify')],
 			},
 			app: {
 				src: 'public/js/app.js',

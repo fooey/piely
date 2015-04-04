@@ -2,4 +2,4 @@
 *
 *	app
 *
-!*/.page-header small{whites-space:nowrap;display:inline-block}#slice-inputs{padding:0 1em}#slice-inputs .sliceDeleter{color:#900;cursor:pointer}#example{white-space:nowrap;text-align:center}#exampleUrl{text-align:center}#exampleUrl a{font-size:14pt;font-weight:700;color:#fff;text-decoration:underline}#examplePie{text-align:center;overflow:hidden}footer .credits{padding:1em}footer img{height:54px;margin:16px auto;display:block}
+!*/#example,#examplePie,#exampleUrl{text-align:center}.page-header small{whites-space:nowrap;display:inline-block}#slice-inputs{padding:0 1em}#slice-inputs .sliceDeleter{color:#900;cursor:pointer}#example{white-space:nowrap}#exampleUrl a{font-size:14pt;font-weight:700;color:#fff;text-decoration:underline}#examplePie{overflow:hidden}footer .credits{padding:1em}footer img{height:54px;margin:16px auto;display:block}

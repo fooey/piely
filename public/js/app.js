@@ -1,5 +1,7 @@
 'use strict';
 
+require('babel/polyfill');
+
 var $ = require('jquery');
 
 var Builder = React.createFactory(require('./jsx/Builder.jsx'));

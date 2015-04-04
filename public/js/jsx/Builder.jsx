@@ -287,7 +287,8 @@ function getSrc() {
 	var component = this;
 	var state = component.state;
 
-	var src = 'http://www.piely.net/';
+	// var src = 'http://www.piely.net/';
+	var src = '/';
 	var params = [];
 
 	if (state.size !== defaults.size) {
