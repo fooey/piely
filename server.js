@@ -36,7 +36,8 @@ const errorHandler = require('errorhandler');
 
 // all environments
 app.set('port', serverPort);
-app.set('views', './views');
+app.set('env', nodeEnv);
+app.set('view engine', 'jade');
 app.set('view engine', 'jade');
 
 
@@ -77,7 +78,7 @@ const routes = require('./routes');
 const pie = require('./routes/pie');
 
 app.get('/', routes.index);
-app.get('/favicon.ico', function(req, res) {res.status(404).send('Not found');});
+app.get('/favicon.ico', function(req, res) {res.redirect('/img/icon.png');});
 app.get('/:size?/:values', pie.draw);
 
 
