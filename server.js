@@ -2,8 +2,8 @@
 
 require('babel/register');
 
-const nodeEnv = process.env.NODE_ENV ? process.env.NODE_ENV : 'production';
-const serverPort = process.env.PORT ? process.env.PORT : 31415;
+const nodeEnv = process.env.NODE_ENV || 'production';
+const serverPort = process.env.PORT || 31415;
 
 if (nodeEnv !== 'development') {
 	require('newrelic');
@@ -33,21 +33,24 @@ const errorHandler = require('errorhandler');
 * Configuration
 */
 
-if (app.get('env') === 'development') {
-	app.use(errorHandler({ dumpExceptions: true, showStack: true }));
-	app.locals.pretty = true;
-	app.use(morgan('dev'));
-}
-else {
-	app.use(errorHandler());
-	app.use(morgan('common'));
-}
-
 
 // all environments
 app.set('port', serverPort);
 app.set('views', './views');
 app.set('view engine', 'jade');
+
+
+if (app.get('env') === 'development') {
+	app.use(errorHandler({ dumpExceptions: true, showStack: true }));
+	app.locals.pretty = true;
+	app.use(morgan('dev'));
+	app.set('view cache', false);
+}
+else {
+	app.use(errorHandler());
+	app.use(morgan('common'));
+	app.set('view cache', true);
+}
 
 app.use(express.static('./public'));
 
@@ -87,14 +90,15 @@ app.listen(serverPort, function() {
 	console.log('');
 	console.log('**************************************************');
 	console.log('Express server started');
-	console.log('Time: %d', Date.now());
-	console.log('Port: %d', serverPort);
-	console.log('Mode: %s', nodeEnv);
-	console.log('PID: %s', process.pid);
+	console.log('Time:     %d', Date.now());
+	console.log('Port:     %d', serverPort);
+	console.log('Mode:     %s', nodeEnv);
+	console.log('PID:      %s', process.pid);
 	console.log('Platform: %s', process.platform);
-	console.log('Arch: %s', process.arch);
-	console.log('Node: %s', process.versions.node);
-	console.log('V8: %s', process.versions.v8);
+	console.log('Arch:     %s', process.arch);
+	console.log('Node:     %s', process.versions.node);
+	console.log('V8:       %s', process.versions.v8);
+	console.log('Express: ', JSON.stringify(app.locals.settings));
 	console.log('**************************************************');
 	console.log('');
 });
