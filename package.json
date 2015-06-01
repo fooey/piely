@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "private": true,
   "engines": {
-    "iojs": "~2.1.0"
+    "iojs": "~2.2.1"
   },
   "dependencies": {
     "async": "^1.0.0",
